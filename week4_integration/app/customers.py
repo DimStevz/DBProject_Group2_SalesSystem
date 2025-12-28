@@ -1,5 +1,7 @@
 from .app import *
-from .login import privileged
+from . import user_auth
+
+privileged = user_auth.privileged
 
 
 @app.get("/api/customers")
@@ -8,25 +10,12 @@ def get_customers():
     with get_database() as db:
         rows = db.execute(
             """
-            SELECT *
+            SELECT id, name, email, phone, address, city, state, post_code, country
             FROM customers;
             """
         ).fetchall()
 
-    return [
-        {
-            "id": row["id"],
-            "name": row["name"],
-            "email": row["email"],
-            "phone": row["phone"],
-            "address": row["address"],
-            "city": row["city"],
-            "state": row["state"],
-            "post_code": row["post_code"],
-            "country": row["country"],
-        }
-        for row in rows
-    ]
+    return [dict(row) for row in rows]
 
 
 @app.get("/api/customers/<int:customer_id>")

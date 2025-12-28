@@ -1,5 +1,7 @@
 from .app import *
-from .login import privileged
+from . import user_auth
+
+privileged = user_auth.privileged
 
 
 @app.get("/api/products")
@@ -8,24 +10,12 @@ def get_products():
     with get_database() as db:
         rows = db.execute(
             """
-            SELECT *
+            SELECT id, sku, active, name, price_cents, quantity, description, category_id
             FROM products;
             """
         ).fetchall()
 
-    return [
-        {
-            "id": row["id"],
-            "sku": row["sku"],
-            "active": row["active"],
-            "name": row["name"],
-            "price_cents": row["price_cents"],
-            "quantity": row["quantity"],
-            "description": row["description"],
-            "category_id": row["category_id"],
-        }
-        for row in rows
-    ]
+    return [dict(row) for row in rows]
 
 
 @app.get("/api/products/<int:product_id>")

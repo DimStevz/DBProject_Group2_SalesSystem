@@ -1,5 +1,7 @@
 from .app import *
-from .login import privileged
+from . import user_auth
+
+privileged = user_auth.privileged
 
 
 @app.get("/api/logs")
@@ -8,21 +10,12 @@ def get_logs():
     with get_database() as db:
         rows = db.execute(
             """
-            SELECT *
+            SELECT id, time, type, product_id, delta, note
             FROM inventory_logs;
             """
         ).fetchall()
 
-    return {
-        str(row["id"]): {
-            "time": row["time"],
-            "type": row["type"],
-            "product_id": row["product_id"],
-            "delta": row["delta"],
-            "note": row["note"],
-        }
-        for row in rows
-    }
+    return [dict(row) for row in rows]
 
 
 @app.get("/api/logs/<int:log_id>")

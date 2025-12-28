@@ -1,5 +1,7 @@
 from .app import *
-from .login import privileged
+from . import user_auth
+
+privileged = user_auth.privileged
 
 
 @app.get("/api/categories")
@@ -8,18 +10,12 @@ def get_categories():
     with get_database() as db:
         rows = db.execute(
             """
-            SELECT *
+            SELECT id, name, description
             FROM categories;
             """
         ).fetchall()
 
-    return {
-        str(row["id"]): {
-            "name": row["name"],
-            "description": row["description"],
-        }
-        for row in rows
-    }
+    return [dict(row) for row in rows]
 
 
 @app.get("/api/categories/<int:category_id>")

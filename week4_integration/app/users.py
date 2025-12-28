@@ -1,5 +1,8 @@
 from .app import *
-from .login import privileged
+from . import user_auth
+from werkzeug.security import generate_password_hash
+
+privileged = user_auth.privileged
 
 
 @app.get("/api/users")
@@ -13,14 +16,7 @@ def get_users():
             """
         ).fetchall()
 
-    return [
-        {
-            "id": row["id"],
-            "username": row["username"],
-            "role": row["role"],
-        }
-        for row in rows
-    ]
+    return [dict(row) for row in rows]
 
 
 @app.get("/api/users/<int:user_id>")
@@ -68,7 +64,7 @@ def create_user():
                 INSERT INTO users (username, password_hash, role)
                 VALUES (?, ?, ?);
                 """,
-                (username, bcrypt.generate_password_hash(password).decode(), role),
+                (username, generate_password_hash(password), role),
             )
             user_id = cursor.lastrowid
         except sqlite3.IntegrityError as e:
@@ -94,7 +90,7 @@ def update_user(user_id):
         values.append(data["username"])
     if "password" in data:
         fields.append("password_hash = ?")
-        values.append(bcrypt.generate_password_hash(data["password"]).decode())
+        values.append(generate_password_hash(data["password"]))
     if "role" in data:
         if data["role"] not in {"r", "w", "a", "d"}:
             return {"message": "Invalid role!"}, 400

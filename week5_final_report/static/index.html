@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inventory / POS — Frontend</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+
+  <div class="app" id="app">
+    <!-- LOGIN VIEW -->
+    <div id="view-login" class="login-wrap" aria-hidden="false">
+      <div class="login-card card">
+        <h2>Inventory / POS — Login</h2>
+        <div id="login-error" class="error" style="display:none"></div>
+        <label>Username
+          <input id="login-username" autocomplete="username" />
+        </label>
+        <label>Password
+          <input id="login-password" type="password" autocomplete="current-password" />
+        </label>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+          <div class="muted">Session handled by server cookie</div>
+          <div style="display:flex;gap:8px">
+            <button id="btn-login" class="btn">Login</button>
+            <button id="btn-sample" class="btn secondary">Fill sample</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN APP (hidden until login) -->
+    <div id="view-app" style="display:none">
+      <div class="layout">
+        <aside class="sidebar">
+          <div class="brand">Inventory DB</div>
+          <div id="user-info" class="muted">—</div>
+          <hr style="border:0;border-top:1px solid var(--border)">
+          <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+          <button class="nav-btn" data-view="products">Products</button>
+          <button class="nav-btn" data-view="categories">Categories</button>
+          <button class="nav-btn" data-view="customers">Customers</button>
+          <button class="nav-btn" data-view="sales">Sales</button>
+          <button class="nav-btn" data-view="users">Users</button>
+          <button class="nav-btn" data-view="logs">Logs</button>
+          <div style="flex:1"></div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="muted" id="session-role">role: —</div>
+            <div style="display:flex;gap:8px">
+              <button id="btn-logout" class="btn secondary">Logout</button>
+            </div>
+          </div>
+        </aside>
+
+        <main class="main">
+          <div class="topbar">
+            <div class="card" style="padding:10px;display:flex;gap:8px;align-items:center;">
+              <div id="current-view-title">Dashboard</div>
+              <div style="width:1px;height:24px;background:var(--border)"></div>
+              <div class="muted" id="server-msg">Connected</div>
+            </div>
+            <div class="card" style="padding:10px;">
+              <span class="muted">Quick actions</span>
+              <div class="quick-actions">
+                <button id="quick-add" class="btn">Add</button>
+                <button id="quick-refresh" class="btn secondary">Refresh</button>
+              </div>
+            </div>
+          </div>
+
+          <section id="content-area" class="card">
+            <!-- dashboard default content -->
+            <div id="view-dashboard">
+              <h3>Overview</h3>
+              <div class="row" style="gap:12px;">
+                <div class="col card" id="overview-stats">
+                  <div class="muted">Fetching overview...</div>
+                </div>
+                <div class="col card" id="overview-recent">
+                  <div class="muted">Recent activity</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- resources will be injected here -->
+            <div id="resource-container" style="display:none"></div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- modal container -->
+  <div id="modal-root" aria-hidden="true"></div>
+
+  <script defer src="/static/script.js"></script>
+</body>
+
+</html>
